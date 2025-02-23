@@ -9,9 +9,9 @@ namespace Projekt.Controllers
 
         private readonly ApplicaationDbContext _db;
 
-        public VillaController(ApplicaationDbContext Context)
+        public VillaController(ApplicaationDbContext db)
         {
-            _db = Context;
+            _db = db;
         }
 
 
@@ -19,6 +19,13 @@ namespace Projekt.Controllers
         {
             var villas =  _db.Villas.ToList();
             return View(villas);
+        }
+
+
+        public IActionResult Create()
+        {
+
+            return View();
         }
     }
 }
