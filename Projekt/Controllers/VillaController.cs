@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WhiteLagoon.Domain.Entities;
 using WhiteLagoon.Infrastructure.Data;
 
 
@@ -27,5 +28,28 @@ namespace Projekt.Controllers
 
             return View();
         }
+
+
+        [HttpPost]
+        public IActionResult Create(Villa obj)
+        {
+            if (obj.Name == obj.Description)
+            {
+                ModelState.AddModelError("Name", "The description cannot match the name");
+            }
+            if (ModelState.IsValid)
+            {
+
+
+                var ville = _db.Villas.Add(obj);
+                _db.SaveChanges();
+
+                return RedirectToAction("Index", "Villa");
+            }
+
+            return View();
+        }
     }
+
+
 }
