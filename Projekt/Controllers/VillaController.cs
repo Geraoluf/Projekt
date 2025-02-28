@@ -42,8 +42,9 @@ namespace Projekt.Controllers
             {
 
 
-                var ville = _db.Villas.Add(obj);
+                _db.Villas.Add(obj);
                 _db.SaveChanges();
+                TempData["success"] = "The villa has been Created.";
 
                 return RedirectToAction("Index", "Villa");
             }
@@ -67,12 +68,13 @@ namespace Projekt.Controllers
         public IActionResult Update(Villa obj)
         {
             
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && obj.Id>0)
             {
 
 
-                var ville = _db.Villas.Update(obj);
+                _db.Villas.Update(obj);
                 _db.SaveChanges();
+                TempData["success"] = "The villa has been updated.";
 
                 return RedirectToAction("Index", "Villa");
             }
@@ -102,12 +104,13 @@ namespace Projekt.Controllers
             {
 
 
-                var ville = _db.Villas.Remove(objFromDb);
+                _db.Villas.Remove(objFromDb);
                 _db.SaveChanges();
+                TempData["success"]="The villa has been deleted.";
 
                 return RedirectToAction("Index", "Villa");
             }
-
+            TempData["error"]="The villa has NOT been deleted.";
             return View();
         }
 
