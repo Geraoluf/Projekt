@@ -75,35 +75,51 @@ namespace Projekt.Controllers
 
 
 
-        public IActionResult Update(int villaId)
-        {                                           //find element(x), hvor x´s Id er lig med VillaId
-            Villa? obj = _db.Villas.FirstOrDefault(x => x.Id == villaId);
+        public IActionResult Update(int villaNumber)
+        {
+            // Find VillaNumber med det givne Villa_Number (primærnøgle)
+            VillaNumber? obj = _db.VillaNumbers.FirstOrDefault(x => x.Villa_Number == villaNumber);
+
             if (obj == null)
             {
                 return RedirectToAction("Error", "Home");
             }
-            return View(obj);
 
+            // For at vise dropdown med Villa-navne i viewet
+            IEnumerable<SelectListItem> villaList = _db.Villas.Select(v => new SelectListItem
+            {
+                Text = v.Name,
+                Value = v.Id.ToString()
+            });
+
+            ViewData["VillaList"] = villaList;
+
+            return View(obj);
         }
+
 
 
         [HttpPost]
-        public IActionResult Update(Villa obj)
+        public IActionResult Update(VillaNumber obj)
         {
-            
-            if (ModelState.IsValid && obj.Id>0)
+            if (ModelState.IsValid)
             {
-
-
-                _db.Villas.Update(obj);
+                _db.VillaNumbers.Update(obj);
                 _db.SaveChanges();
-                TempData["success"] = "The villa has been updated.";
-
-                return RedirectToAction("Index", "Villa");
+                TempData["success"] = "Villa Number updated successfully!";
+                return RedirectToAction("Index");
             }
 
-            return View();
+            // Hvis der er fejl i modellen, skal dropdown-listen vises igen
+            ViewData["VillaList"] = _db.Villas.Select(v => new SelectListItem
+            {
+                Text = v.Name,
+                Value = v.Id.ToString()
+            });
+
+            return View(obj);
         }
+
 
 
 

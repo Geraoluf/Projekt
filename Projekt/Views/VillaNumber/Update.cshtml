@@ -1,0 +1,58 @@
+﻿@model VillaNumber
+
+<div class="w-100 card border-0 p-4">
+    <div class="card-header bg-warning bg-gradient modal-lg py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Update Villa Number</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body border p-4">
+        <form method="post" class="row">
+            <div class="py-3">
+                @* Hidden field for ID (hvis nødvendigt i din controller) *@
+                <input type="hidden" asp-for="Villa_Number" />
+
+                <div class="mb-3 col-12">
+                    <label asp-for="VillaId" class="form-label"></label>
+                    <select asp-for="VillaId" asp-items="@ViewData["VillaList"] as IEnumerable<SelectListItem>" class="form-select shadow">
+                        <option disabled selected>--Select Villa--</option>
+                    </select>
+                    <span asp-validation-for="VillaId" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating py-1 col-12">
+                    <input asp-for="Villa_Number" class="form-control border shadow" disabled />
+                    <label asp-for="Villa_Number" class="ms-2"></label>
+                    <span asp-validation-for="Villa_Number" class="text-danger"> </span>
+                </div>
+
+                <div class="form-floating py-1 col-12">
+                    <input asp-for="SpecialDetails" class="form-control border shadow" />
+                    <label asp-for="SpecialDetails" class="ms-2"></label>
+                    <span asp-validation-for="SpecialDetails" class="text-danger"> </span>
+                </div>
+
+                <div class="row pt-2">
+                    <div class="col-6 col-md-3">
+                        <button type="submit" class="btn btn-warning w-100">
+                            <i class="bi bi-check-circle"></i> Update
+                        </button>
+                    </div>
+
+                    <div class="col-6 col-md-3">
+                        <a asp-controller="VillaNumber" asp-action="Index" class="btn btn-secondary w-100">
+                            <i class="bi bi-x-circle"></i> Cancel
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
