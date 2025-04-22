@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using WhiteLagoon.Domain.Entities;
 using WhiteLagoon.Infrastructure.Data;
 
@@ -18,39 +20,60 @@ namespace Projekt.Controllers
 
         public IActionResult Index()
         {
-            var villaNumbers =  _db.VillaNumbers.ToList();
+            var villaNumbers =  _db.VillaNumbers.Include(u=>u.Villa).ToList();
             return View(villaNumbers);
         }
 
 
         public IActionResult Create()
         {
+            IEnumerable<SelectListItem> list = _db.Villas.ToList().Select(u=> new SelectListItem
+            {
+                Text = u.Name,
+                Value = u.Id.ToString(),
+            });
 
+            ViewData["VillaList"] = list;
             return View();
         }
 
 
         [HttpPost]
-        public IActionResult Create(Villa obj)
-        {      //custom validation
-            if (obj.Name == obj.Description)
+        public IActionResult Create(VillaNumber obj)
+        {
+            ModelState.Remove("Villa");
+
+            // Tjek om denne Villa_Number allerede findes (fordi det er primary key)
+            bool villaNumberAlreadyExists = _db.VillaNumbers.Any(v => v.Villa_Number == obj.Villa_Number);
+
+            if (villaNumberAlreadyExists)
             {
-                ModelState.AddModelError("Name", "The description cannot match the name");
+                ModelState.AddModelError("Villa_Number", "Dette villa-nummer findes allerede. Vælg et unikt nummer.");
             }
 
             if (ModelState.IsValid)
             {
-
-
-                _db.Villas.Add(obj);
+                _db.VillaNumbers.Add(obj);
                 _db.SaveChanges();
-                TempData["success"] = "The villa has been Created.";
-
-                return RedirectToAction("Index", "Villa");
+                TempData["success"] = "Villa-nummeret er blevet oprettet.";
+                return RedirectToAction("Index");
             }
 
-            return View();
+            // Husk at gensende VillaList ved fejl
+            ViewData["VillaList"] = _db.Villas.ToList().Select(u => new SelectListItem
+            {
+                Text = u.Name,
+                Value = u.Id.ToString(),
+            });
+
+            return View(obj);
         }
+
+
+
+
+
+
 
         public IActionResult Update(int villaId)
         {                                           //find element(x), hvor x´s Id er lig med VillaId

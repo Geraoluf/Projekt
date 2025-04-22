@@ -12,13 +12,16 @@
     <div class="card-body border p-4">
         <form method="post" class="row">
             <div class="py-3">
-                <div asp-validation-summary="All"></div>
+                @*<div asp-validation-summary="All"></div>*@
 
-                <div class="form-floating py-1 col-12">
-                    <input asp-for="VillaId" class="form-control border shadow" />
-                    <label asp-for="VillaId" class="ms-2"></label>
-                    <span asp-validation-for="VillaId" class="text-danger"> </span>
+                <div class="mb-3 col-12">
+                    <label asp-for="VillaId" class="form-label"></label>
+                    <select asp-for="VillaId" asp-items="@ViewData["VillaList"] as IEnumerable<SelectListItem>" class="form-select shadow">
+                        <option disabled selected>--Select Villa--</option>
+                    </select>
+                    <span asp-validation-for="VillaId" class="text-danger"></span>
                 </div>
+
 
                 <div class="form-floating py-1 col-12">
                     <input asp-for="Villa_Number" class="form-control border shadow" />
