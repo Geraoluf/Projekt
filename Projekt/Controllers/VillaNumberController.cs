@@ -123,35 +123,34 @@ namespace Projekt.Controllers
 
 
 
-        public IActionResult Delete(int villaId)
-        {                                           //find element(x), hvor x´s Id er lig med VillaId
-            Villa? obj = _db.Villas.FirstOrDefault(x => x.Id == villaId);
-            if (obj is null)
+        public IActionResult Delete(int villaNumber)
+        {
+            VillaNumber? obj = _db.VillaNumbers.Include(v => v.Villa).FirstOrDefault(x => x.Villa_Number == villaNumber);
+            if (obj == null)
             {
                 return RedirectToAction("Error", "Home");
             }
             return View(obj);
-
         }
+
 
 
         [HttpPost]
-        public IActionResult Delete(Villa obj)
-        {                                          //find element(x), hvor x´s Id er lig med VillaId
-            Villa? objFromDb = _db.Villas.FirstOrDefault(x => x.Id == obj.Id);
-            if (objFromDb is not null)
+        public IActionResult Delete(VillaNumber obj)
+        {
+            VillaNumber? objFromDb = _db.VillaNumbers.FirstOrDefault(x => x.Villa_Number == obj.Villa_Number);
+            if (objFromDb != null)
             {
-
-
-                _db.Villas.Remove(objFromDb);
+                _db.VillaNumbers.Remove(objFromDb);
                 _db.SaveChanges();
-                TempData["success"]="The villa has been deleted.";
-
-                return RedirectToAction("Index", "Villa");
+                TempData["success"] = "Villa-nummeret blev slettet.";
+                return RedirectToAction("Index");
             }
-            TempData["error"]="The villa has NOT been deleted.";
-            return View();
+
+            TempData["error"] = "Villa-nummeret blev ikke fundet.";
+            return RedirectToAction("Index");
         }
+
 
     }
 
